@@ -144,7 +144,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)src\third_party\imgui;$(ProjectDir)src\third_party\glfw\include;$(ProjectDir)src\third_party\glm;$(ProjectDir)src\third_party\Vulkan-Headers\Include;$(ProjectDir)src\third_party\tinygltf;$(ProjectDir)src\third_party\imgui\backends;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -162,9 +162,12 @@
   <ItemGroup>
     <ClCompile Include="src\application.cpp" />
     <ClCompile Include="src\engine\engine_helper.cpp" />
+    <ClCompile Include="src\engine\game_object\base_shape.cpp" />
+    <ClCompile Include="src\engine\game_object\box.cpp" />
     <ClCompile Include="src\engine\game_object\camera.cpp" />
     <ClCompile Include="src\engine\game_object\debug_draw.cpp" />
     <ClCompile Include="src\engine\game_object\gltf.cpp" />
+    <ClCompile Include="src\engine\game_object\sphere.cpp" />
     <ClCompile Include="src\engine\game_object\terrain.cpp" />
     <ClCompile Include="src\engine\ray_tracing\raytracing_callable.cpp" />
     <ClCompile Include="src\engine\ray_tracing\raytracing_shadow.cpp" />
@@ -190,9 +193,12 @@
   <ItemGroup>
     <ClInclude Include="src\application.h" />
     <ClInclude Include="src\engine\engine_helper.h" />
+    <ClInclude Include="src\engine\game_object\base_shape.h" />
+    <ClInclude Include="src\engine\game_object\box.h" />
     <ClInclude Include="src\engine\game_object\camera.h" />
     <ClInclude Include="src\engine\game_object\debug_draw.h" />
     <ClInclude Include="src\engine\game_object\gltf.h" />
+    <ClInclude Include="src\engine\game_object\sphere.h" />
     <ClInclude Include="src\engine\game_object\terrain.h" />
     <ClInclude Include="src\engine\ray_tracing\raytracing_base.h" />
     <ClInclude Include="src\engine\ray_tracing\raytracing_callable.h" />

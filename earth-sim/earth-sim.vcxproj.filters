@@ -147,6 +147,15 @@
     <ClCompile Include="src\engine\ray_tracing\raytracing_callable.cpp">
       <Filter>Source Files\engine\ray_tracing</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\game_object\sphere.cpp">
+      <Filter>Source Files\engine\game_object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\game_object\base_shape.cpp">
+      <Filter>Source Files\engine\game_object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\game_object\box.cpp">
+      <Filter>Source Files\engine\game_object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\shaders\functions.glsl.h">
@@ -274,6 +283,15 @@
     </ClInclude>
     <ClInclude Include="src\engine\ray_tracing\raytracing_shadow.h">
       <Filter>Header Files\engine\ray_tracing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\game_object\box.h">
+      <Filter>Header Files\engine\game_object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\game_object\sphere.h">
+      <Filter>Header Files\engine\game_object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\game_object\base_shape.h">
+      <Filter>Header Files\engine\game_object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

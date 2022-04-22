@@ -18,8 +18,8 @@ namespace er = engine::renderer;
 namespace ego = engine::game_object;
 
 namespace {
-constexpr int kWindowSizeX = 2560;
-constexpr int kWindowSizeY = 1440;
+constexpr int kWindowSizeX = 1280;
+constexpr int kWindowSizeY = 720;
 static int s_update_frame_count = -1;
 
 er::AttachmentDescription FillAttachmentDescription(

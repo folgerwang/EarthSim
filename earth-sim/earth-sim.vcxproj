@@ -104,7 +104,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)src\third_party\imgui;$(ProjectDir)src\third_party\glfw\include;$(ProjectDir)src\third_party\glm;$(ProjectDir)src\third_party\Vulkan-Headers\Include;$(ProjectDir)src\third_party\tinygltf;$(ProjectDir)src\third_party\imgui\backends;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -144,7 +144,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)src\third_party\imgui;$(ProjectDir)src\third_party\glfw\include;$(ProjectDir)src\third_party\glm;$(ProjectDir)src\third_party\Vulkan-Headers\Include;$(ProjectDir)src\third_party\tinygltf;$(ProjectDir)src\third_party\imgui\backends;$(ProjectDir)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -167,6 +167,8 @@
     <ClCompile Include="src\engine\game_object\camera.cpp" />
     <ClCompile Include="src\engine\game_object\debug_draw.cpp" />
     <ClCompile Include="src\engine\game_object\gltf.cpp" />
+    <ClCompile Include="src\engine\game_object\object_file.cpp" />
+    <ClCompile Include="src\engine\game_object\patch.cpp" />
     <ClCompile Include="src\engine\game_object\sphere.cpp" />
     <ClCompile Include="src\engine\game_object\terrain.cpp" />
     <ClCompile Include="src\engine\ray_tracing\raytracing_callable.cpp" />
@@ -198,6 +200,8 @@
     <ClInclude Include="src\engine\game_object\camera.h" />
     <ClInclude Include="src\engine\game_object\debug_draw.h" />
     <ClInclude Include="src\engine\game_object\gltf.h" />
+    <ClInclude Include="src\engine\game_object\object_file.h" />
+    <ClInclude Include="src\engine\game_object\patch.h" />
     <ClInclude Include="src\engine\game_object\sphere.h" />
     <ClInclude Include="src\engine\game_object\terrain.h" />
     <ClInclude Include="src\engine\ray_tracing\raytracing_base.h" />

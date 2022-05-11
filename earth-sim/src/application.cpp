@@ -11,6 +11,7 @@
 #include "engine/renderer/renderer_helper.h"
 #include "engine/ray_tracing/raytracing_callable.h"
 #include "engine/ray_tracing/raytracing_shadow.h"
+#include "engine/game_object/object_file.h"
 #include "engine/engine_helper.h"
 #include "application.h"
 
@@ -18,8 +19,8 @@ namespace er = engine::renderer;
 namespace ego = engine::game_object;
 
 namespace {
-constexpr int kWindowSizeX = 1280;
-constexpr int kWindowSizeY = 720;
+constexpr int kWindowSizeX = 2560;
+constexpr int kWindowSizeY = 1440;
 static int s_update_frame_count = -1;
 
 er::AttachmentDescription FillAttachmentDescription(
@@ -400,6 +401,8 @@ void RealWorldApplication::initVulkan() {
     assert(command_pool_);
     device_info_.cmd_pool = command_pool_;
     er::Helper::init(device_info_);
+
+    engine::game_object::ObjectMesh object(device_info_, "C:/lungs-3dmodel/Lungs_OBJ.objF712CD48-1E90-455F-A65F-EA4627AAB511.obj");
 
     engine::helper::loadMtx2Texture(
         device_info_,

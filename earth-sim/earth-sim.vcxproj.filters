@@ -156,6 +156,12 @@
     <ClCompile Include="src\engine\game_object\box.cpp">
       <Filter>Source Files\engine\game_object</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\game_object\patch.cpp">
+      <Filter>Source Files\engine\game_object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\game_object\object_file.cpp">
+      <Filter>Source Files\engine\game_object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\shaders\functions.glsl.h">
@@ -291,6 +297,12 @@
       <Filter>Header Files\engine\game_object</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\game_object\base_shape.h">
+      <Filter>Header Files\engine\game_object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\game_object\patch.h">
+      <Filter>Header Files\engine\game_object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\game_object\object_file.h">
       <Filter>Header Files\engine\game_object</Filter>
     </ClInclude>
   </ItemGroup>

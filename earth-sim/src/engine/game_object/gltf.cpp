@@ -55,7 +55,7 @@ static void transformBbox(
 }
 
 static void calculateBbox(
-    std::shared_ptr<ego::ObjectData>& gltf_object,
+    std::shared_ptr<ego::GltfData>& gltf_object,
     int32_t node_idx,
     const glm::mat4& parent_matrix,
     glm::vec3& output_bbox_min,
@@ -86,7 +86,7 @@ static void calculateBbox(
 static void setupMeshState(
     const renderer::DeviceInfo& device_info,
     const tinygltf::Model& model,
-    std::shared_ptr<ego::ObjectData>& gltf_object) {
+    std::shared_ptr<ego::GltfData>& gltf_object) {
 
     const auto& device = device_info.device;
 
@@ -381,7 +381,7 @@ static void setupMesh(
 
 static void setupMeshes(
     const tinygltf::Model& model,
-    std::shared_ptr<ego::ObjectData>& gltf_object) {
+    std::shared_ptr<ego::GltfData>& gltf_object) {
     gltf_object->meshes_.resize(model.meshes.size());
     for (int i_mesh = 0; i_mesh < model.meshes.size(); i_mesh++) {
         setupMesh(model, model.meshes[i_mesh], gltf_object->meshes_[i_mesh]);
@@ -478,7 +478,7 @@ static void setupAnimation(
 
 static void setupAnimations(
     const tinygltf::Model& model,
-    std::shared_ptr<ego::ObjectData>& gltf_object) {
+    std::shared_ptr<ego::GltfData>& gltf_object) {
     gltf_object->animations_.resize(model.animations.size());
     for (int i_anim = 0; i_anim < model.animations.size(); i_anim++) {
         setupAnimation(model, model.animations[i_anim], gltf_object->animations_[i_anim]);
@@ -527,7 +527,7 @@ static void setupSkin(
 static void setupSkins(
     const renderer::DeviceInfo& device_info,
     const tinygltf::Model& model,
-    std::shared_ptr<ego::ObjectData>& gltf_object) {
+    std::shared_ptr<ego::GltfData>& gltf_object) {
     gltf_object->skins_.resize(model.skins.size());
     for (int i_skin = 0; i_skin < model.skins.size(); i_skin++) {
         setupSkin(device_info, model, model.skins[i_skin], gltf_object->skins_[i_skin]);
@@ -537,7 +537,7 @@ static void setupSkins(
 static void setupNode(
     const tinygltf::Model& model,
     const uint32_t node_idx,
-    std::shared_ptr<ego::ObjectData>& gltf_object) {
+    std::shared_ptr<ego::GltfData>& gltf_object) {
 
     const auto& node = model.nodes[node_idx];
     auto& node_info = gltf_object->nodes_[node_idx];
@@ -593,7 +593,7 @@ static void setupNode(
 
 static void setupNodes(
     const tinygltf::Model& model, 
-    std::shared_ptr<ego::ObjectData>& gltf_object) {
+    std::shared_ptr<ego::GltfData>& gltf_object) {
     gltf_object->nodes_.resize(model.nodes.size());
     for (int i_node = 0; i_node < model.nodes.size(); i_node++) {
         setupNode(model, i_node, gltf_object);
@@ -602,7 +602,7 @@ static void setupNodes(
 
 static void setupModel(
     const tinygltf::Model& model,
-    std::shared_ptr<ego::ObjectData>& gltf_object) {
+    std::shared_ptr<ego::GltfData>& gltf_object) {
     assert(model.scenes.size() > 0);
     gltf_object->default_scene_ = model.defaultScene;
     gltf_object->scenes_.resize(model.scenes.size());
@@ -619,7 +619,7 @@ static void setupModel(
 
 static void setupRaytracing(
     const renderer::DeviceInfo& device_info,
-    std::shared_ptr<ego::ObjectData>& gltf_object) {
+    std::shared_ptr<ego::GltfData>& gltf_object) {
 
     for (auto& mesh : gltf_object->meshes_) {
         for (auto& prim : mesh.primitives_) {
@@ -678,7 +678,7 @@ static void setupRaytracing(
 }
 
 static renderer::WriteDescriptorList addGltfTextures(
-    const std::shared_ptr<ego::ObjectData>& gltf_object,
+    const std::shared_ptr<ego::GltfData>& gltf_object,
     const ego::MaterialInfo& material,
     const std::shared_ptr<renderer::Sampler>& texture_sampler,
     const renderer::TextureInfo& thin_film_lut_tex) {
@@ -771,7 +771,7 @@ static void updateDescriptorSets(
     const std::shared_ptr<renderer::DescriptorPool>& descriptor_pool,
     const std::shared_ptr<renderer::DescriptorSetLayout>& material_desc_set_layout,
     const std::shared_ptr<renderer::DescriptorSetLayout>& skin_desc_set_layout,
-    const std::shared_ptr<ego::ObjectData>& gltf_object,
+    const std::shared_ptr<ego::GltfData>& gltf_object,
     const std::shared_ptr<renderer::Sampler>& texture_sampler,
     const renderer::TextureInfo& thin_film_lut_tex)
 {
@@ -804,7 +804,7 @@ static void updateDescriptorSets(
 
 static void drawMesh(
     std::shared_ptr<renderer::CommandBuffer> cmd_buf,
-    const std::shared_ptr<ego::ObjectData>& gltf_object,
+    const std::shared_ptr<ego::GltfData>& gltf_object,
     const std::shared_ptr<renderer::PipelineLayout>& gltf_pipeline_layout,
     const renderer::DescriptorSetList& desc_set_list,
     const ego::MeshInfo& mesh_info,
@@ -856,7 +856,7 @@ static void drawMesh(
 
 static void drawNodes(
     std::shared_ptr<renderer::CommandBuffer> cmd_buf,
-    const std::shared_ptr<ego::ObjectData>& gltf_object,
+    const std::shared_ptr<ego::GltfData>& gltf_object,
     const std::shared_ptr<renderer::PipelineLayout>& gltf_pipeline_layout,
     const renderer::DescriptorSetList& desc_set_list,
     int32_t node_idx) {
@@ -1233,7 +1233,7 @@ std::shared_ptr<renderer::DescriptorSetLayout> GltfObject::material_desc_set_lay
 std::shared_ptr<renderer::DescriptorSetLayout> GltfObject::skin_desc_set_layout_;
 std::shared_ptr<renderer::PipelineLayout> GltfObject::gltf_pipeline_layout_;
 std::unordered_map<size_t, std::shared_ptr<renderer::Pipeline>> GltfObject::gltf_pipeline_list_;
-std::unordered_map<std::string, std::shared_ptr<ObjectData>> GltfObject::object_list_;
+std::unordered_map<std::string, std::shared_ptr<GltfData>> GltfObject::object_list_;
 std::shared_ptr<renderer::DescriptorSetLayout> GltfObject::gltf_indirect_draw_desc_set_layout_;
 std::shared_ptr<renderer::PipelineLayout> GltfObject::gltf_indirect_draw_pipeline_layout_;
 std::shared_ptr<renderer::Pipeline> GltfObject::gltf_indirect_draw_pipeline_;
@@ -1264,7 +1264,7 @@ void PrimitiveInfo::generateHash() {
     }
 }
 
-void ObjectData::destroy() {
+void GltfData::destroy() {
     for (auto& texture : textures_) {
         texture.destroy(device_);
     }
@@ -1298,7 +1298,7 @@ struct compare {
     }
 };
 
-void AnimChannelInfo::update(ObjectData* object, float time, float time_scale/* = 1.0f*/, bool repeat/* = true */ ) {
+void AnimChannelInfo::update(GltfData* object, float time, float time_scale/* = 1.0f*/, bool repeat/* = true */ ) {
     float scaled_time = time / time_scale;
     auto& last_one = samples_.back();
     
@@ -1344,7 +1344,7 @@ glm::mat4 NodeInfo::getLocalMatrix() {
     return joint_mat * matrix_;
 }
 
-glm::mat4 ObjectData::getNodeMatrix(const int32_t& node_idx) {
+glm::mat4 GltfData::getNodeMatrix(const int32_t& node_idx) {
     if (node_idx < 0)
         return glm::mat4(1.0f);
 
@@ -1360,7 +1360,7 @@ glm::mat4 ObjectData::getNodeMatrix(const int32_t& node_idx) {
     return node_matrix;
 }
 
-void ObjectData::updateJoints(
+void GltfData::updateJoints(
     const renderer::DeviceInfo& device_info,
     int32_t node_idx) {
     auto& node = nodes_[node_idx];
@@ -1390,7 +1390,7 @@ void ObjectData::updateJoints(
     }
 }
 
-void ObjectData::update(
+void GltfData::update(
     const renderer::DeviceInfo& device_info,
     const uint32_t& active_anim_idx,
     const float& time) {
@@ -1481,7 +1481,7 @@ GltfObject::GltfObject(
     }
 }
 
-void ObjectData::generateSharedDescriptorSet(
+void GltfData::generateSharedDescriptorSet(
     const std::shared_ptr<renderer::Device>& device,
     const std::shared_ptr<renderer::DescriptorPool>& descriptor_pool,
     const std::shared_ptr<renderer::DescriptorSetLayout>& gltf_indirect_draw_desc_set_layout,
@@ -1969,7 +1969,7 @@ std::shared_ptr<renderer::BufferInfo> GltfObject::getGameObjectsBuffer() {
     return game_objects_buffer_;
 }
 
-std::shared_ptr<ego::ObjectData> GltfObject::loadGltfModel(
+std::shared_ptr<ego::GltfData> GltfObject::loadGltfModel(
     const renderer::DeviceInfo& device_info,
     const std::string& input_filename)
 {
@@ -2003,7 +2003,7 @@ std::shared_ptr<ego::ObjectData> GltfObject::loadGltfModel(
         return nullptr;
     }
 
-    auto gltf_object = std::make_shared<ego::ObjectData>(device_info.device);
+    auto gltf_object = std::make_shared<ego::GltfData>(device_info.device);
     gltf_object->meshes_.reserve(model.meshes.size());
 
     setupMeshState(device_info, model, gltf_object);

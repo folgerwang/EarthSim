@@ -60,7 +60,7 @@ struct BufferViewInfo {
     renderer::Format        format;
 };
 
-struct ObjectData;
+struct GltfData;
 struct AnimChannelInfo {
     enum AnimChannelType {
         kTranslation,
@@ -75,7 +75,7 @@ struct AnimChannelInfo {
     BufferViewInfo          data_buffer_;
     std::vector<std::pair<float, glm::vec4>>    samples_;
 
-    void update(ObjectData* object, float time, float time_scale = 1.0f, bool repeat = true);
+    void update(GltfData* object, float time, float time_scale = 1.0f, bool repeat = true);
 };
 
 struct AnimationInfo {
@@ -123,7 +123,7 @@ struct SceneInfo {
     glm::vec3                   bbox_max_ = glm::vec3(std::numeric_limits<float>::min());
 };
 
-struct ObjectData {
+struct GltfData {
     const std::shared_ptr<renderer::Device>& device_;
     int32_t                     default_scene_;
     std::vector<SceneInfo>      scenes_;
@@ -145,8 +145,8 @@ struct ObjectData {
     std::shared_ptr<renderer::DescriptorSet> update_instance_buffer_desc_set_;
 
 public:
-    ObjectData(const std::shared_ptr<renderer::Device>& device) : device_(device) {}
-    ~ObjectData() {}
+    GltfData(const std::shared_ptr<renderer::Device>& device) : device_(device) {}
+    ~GltfData() {}
 
     void update(
         const renderer::DeviceInfo& device_info,
@@ -174,7 +174,7 @@ class GltfObject {
         kMaxNumObjects = 10240
     };
     const renderer::DeviceInfo& device_info_;
-    std::shared_ptr<ObjectData> object_;
+    std::shared_ptr<GltfData> object_;
     glm::mat4                   location_;
 
     // static members.
@@ -184,7 +184,7 @@ class GltfObject {
     static std::shared_ptr<renderer::DescriptorSetLayout> skin_desc_set_layout_;
     static std::shared_ptr<renderer::PipelineLayout> gltf_pipeline_layout_;
     static std::unordered_map<size_t, std::shared_ptr<renderer::Pipeline>> gltf_pipeline_list_;
-    static std::unordered_map<std::string, std::shared_ptr<ObjectData>> object_list_;
+    static std::unordered_map<std::string, std::shared_ptr<GltfData>> object_list_;
     static std::shared_ptr<renderer::DescriptorSetLayout> gltf_indirect_draw_desc_set_layout_;
     static std::shared_ptr<renderer::PipelineLayout> gltf_indirect_draw_pipeline_layout_;
     static std::shared_ptr<renderer::Pipeline> gltf_indirect_draw_pipeline_;
@@ -297,7 +297,7 @@ public:
 
     static std::shared_ptr<renderer::BufferInfo> getGameObjectsBuffer();
 
-    static std::shared_ptr<ObjectData> loadGltfModel(
+    static std::shared_ptr<GltfData> loadGltfModel(
         const renderer::DeviceInfo& device_info,
         const std::string& input_filename);
 };

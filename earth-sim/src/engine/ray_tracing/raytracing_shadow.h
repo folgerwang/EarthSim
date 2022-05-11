@@ -21,7 +21,7 @@ class RayTracingShadowTest : public RayTracingBase {
         vec4      light_pos;
     };
 
-    std::shared_ptr<game_object::ObjectData> game_object_{};
+    std::shared_ptr<game_object::GltfData> game_object_{};
 
     virtual void initBottomLevelDataInfo(
         const renderer::DeviceInfo& device_info) final;

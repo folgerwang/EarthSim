@@ -7,15 +7,22 @@ namespace game_object {
 
 class ObjectMesh {
     std::vector<std::shared_ptr<Patch>> patches_;
+    std::shared_ptr<renderer::DescriptorSet>  object_desc_set_;
     std::shared_ptr<renderer::DescriptorSetLayout> object_desc_set_layout_;
     std::shared_ptr<renderer::PipelineLayout> object_pipeline_layout_;
     std::shared_ptr<renderer::Pipeline> object_pipeline_;
+    std::shared_ptr<renderer::TextureInfo> diffuse_tex_;
+    std::shared_ptr<renderer::TextureInfo> normal_tex_;
+    std::shared_ptr<renderer::TextureInfo> glossiness_tex_;
+    std::shared_ptr<renderer::TextureInfo> specular_tex_;
 
 public:
     ObjectMesh() {}
 
     void loadObjectFile(
         const renderer::DeviceInfo& device_info,
+        const std::shared_ptr<renderer::DescriptorPool>& descriptor_pool,
+        const std::shared_ptr<renderer::Sampler>& texture_sampler,
         const std::string& object_name,
         const std::string& shader_name,
         const std::shared_ptr<renderer::RenderPass>& render_pass,

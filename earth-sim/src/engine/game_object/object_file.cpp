@@ -61,14 +61,19 @@ static void createUnifiedMesh(
         auto i1 = glm::uvec3(v_face.y, vn_face.y, vt_face.y);
         auto i2 = glm::uvec3(v_face.z, vn_face.z, vt_face.z);
         auto i3 = glm::uvec3(v_face.w, vn_face.w, vt_face.w);
-        new_face.x = getNewIndex(index_map, new_vertices, new_normals, new_uvs, vertices, normals, uvs, i0);
-        new_face.y = getNewIndex(index_map, new_vertices, new_normals, new_uvs, vertices, normals, uvs, i1);
-        new_face.z = getNewIndex(index_map, new_vertices, new_normals, new_uvs, vertices, normals, uvs, i2);
+        auto n0 = getNewIndex(index_map, new_vertices, new_normals, new_uvs, vertices, normals, uvs, i0);
+        auto n1 = getNewIndex(index_map, new_vertices, new_normals, new_uvs, vertices, normals, uvs, i1);
+        auto n2 = getNewIndex(index_map, new_vertices, new_normals, new_uvs, vertices, normals, uvs, i2);
+        new_face.x = n0;
+        new_face.y = n1;
+        new_face.z = n2;
         new_faces.push_back(new_face);
 
         if (v_face.w != (uint32_t)-1) {
-            new_face.y = new_face.z;
+            new_face.x = n0;
+            new_face.y = n2;
             new_face.z = getNewIndex(index_map, new_vertices, new_normals, new_uvs, vertices, normals, uvs, i3);
+            new_faces.push_back(new_face);
         }
     }
 }
@@ -221,16 +226,85 @@ static std::shared_ptr<game_object::Patch> createPatch(
 static std::shared_ptr<renderer::PipelineLayout> createPipelineLayout(
     const std::shared_ptr<renderer::Device>& device,
     const renderer::DescriptorSetLayoutList& global_desc_set_layouts,
-    const std::shared_ptr<renderer::DescriptorSetLayout>& material_desc_set_layout) {
+    const std::shared_ptr<renderer::DescriptorSetLayout>& object_desc_set_layout) {
     renderer::PushConstantRange push_const_range{};
-    push_const_range.stage_flags = SET_FLAG_BIT(ShaderStage, VERTEX_BIT) | SET_FLAG_BIT(ShaderStage, FRAGMENT_BIT);
+    push_const_range.stage_flags =
+        SET_FLAG_BIT(ShaderStage, VERTEX_BIT) |
+        SET_FLAG_BIT(ShaderStage, FRAGMENT_BIT);
     push_const_range.offset = 0;
     push_const_range.size = sizeof(glsl::ModelParams);
 
     renderer::DescriptorSetLayoutList desc_set_layouts = global_desc_set_layouts;
-//    desc_set_layouts.push_back(material_desc_set_layout);
+    desc_set_layouts.push_back(object_desc_set_layout);
 
     return device->createPipelineLayout(desc_set_layouts, { push_const_range });
+}
+
+static std::shared_ptr<renderer::DescriptorSetLayout> createObjectDescriptorSetLayout(
+    const std::shared_ptr<renderer::Device>& device) {
+    std::vector<renderer::DescriptorSetLayoutBinding> bindings;
+    bindings.reserve(4);
+
+    bindings.push_back(renderer::helper::getTextureSamplerDescriptionSetLayoutBinding(DIFFUSE_TEX_INDEX));
+    bindings.push_back(renderer::helper::getTextureSamplerDescriptionSetLayoutBinding(NORMAL_TEX_INDEX));
+    bindings.push_back(renderer::helper::getTextureSamplerDescriptionSetLayoutBinding(GLOSSNESS_TEX_INDEX));
+    bindings.push_back(renderer::helper::getTextureSamplerDescriptionSetLayoutBinding(SPECULAR_TEX_INDEX));
+
+    return device->createDescriptorSetLayout(bindings);
+}
+
+static renderer::WriteDescriptorList addObjectTextures(
+    const std::shared_ptr<renderer::DescriptorSet>& desc_set,
+    const std::shared_ptr<renderer::Sampler>& texture_sampler,
+    const renderer::TextureInfo& normal_tex,
+    const renderer::TextureInfo& glossness_tex,
+    const renderer::TextureInfo& diffuse_tex,
+    const renderer::TextureInfo& specular_tex) {
+
+    renderer::WriteDescriptorList descriptor_writes;
+    descriptor_writes.reserve(4);
+
+    // diffuse.
+    renderer::Helper::addOneTexture(
+        descriptor_writes,
+        desc_set,
+        renderer::DescriptorType::COMBINED_IMAGE_SAMPLER,
+        DIFFUSE_TEX_INDEX,
+        texture_sampler,
+        diffuse_tex.view,
+        renderer::ImageLayout::SHADER_READ_ONLY_OPTIMAL);
+
+    // normal.
+    renderer::Helper::addOneTexture(
+        descriptor_writes,
+        desc_set,
+        renderer::DescriptorType::COMBINED_IMAGE_SAMPLER,
+        NORMAL_TEX_INDEX,
+        texture_sampler,
+        normal_tex.view,
+        renderer::ImageLayout::SHADER_READ_ONLY_OPTIMAL);
+
+    // glossness.
+    renderer::Helper::addOneTexture(
+        descriptor_writes,
+        desc_set,
+        renderer::DescriptorType::COMBINED_IMAGE_SAMPLER,
+        GLOSSNESS_TEX_INDEX,
+        texture_sampler,
+        glossness_tex.view,
+        renderer::ImageLayout::SHADER_READ_ONLY_OPTIMAL);
+
+    // specular.
+    renderer::Helper::addOneTexture(
+        descriptor_writes,
+        desc_set,
+        renderer::DescriptorType::COMBINED_IMAGE_SAMPLER,
+        SPECULAR_TEX_INDEX,
+        texture_sampler,
+        specular_tex.view,
+        renderer::ImageLayout::SHADER_READ_ONLY_OPTIMAL);
+
+    return descriptor_writes;
 }
 
 }
@@ -239,6 +313,8 @@ namespace game_object {
 
 void ObjectMesh::loadObjectFile(
     const renderer::DeviceInfo& device_info,
+    const std::shared_ptr<renderer::DescriptorPool>& descriptor_pool,
+    const std::shared_ptr<renderer::Sampler>& texture_sampler,
     const std::string& object_name,
     const std::string& shader_name,
     const std::shared_ptr<renderer::RenderPass>& render_pass,
@@ -255,6 +331,17 @@ void ObjectMesh::loadObjectFile(
     std::vector<glm::uvec4> v_faces;
     std::vector<glm::uvec4> vn_faces;
     std::vector<glm::uvec4> vt_faces;
+
+    diffuse_tex_ = std::make_shared<renderer::TextureInfo>();
+    normal_tex_ = std::make_shared<renderer::TextureInfo>();
+    glossiness_tex_ = std::make_shared<renderer::TextureInfo>();
+    specular_tex_ = std::make_shared<renderer::TextureInfo>();
+
+    auto format = renderer::Format::R8G8B8A8_UNORM;
+    engine::helper::createTextureImage(device_info, "assets/lungs/lungs_default_Diffuse.png", format, *diffuse_tex_);
+    engine::helper::createTextureImage(device_info, "assets/lungs/lungs_default_Normal.png", format, *normal_tex_);
+    engine::helper::createTextureImage(device_info, "assets/lungs/lungs_default_Glossiness.png", format, *glossiness_tex_);
+    engine::helper::createTextureImage(device_info, "assets/lungs/lungs_default_Specular.png", format, *specular_tex_);
 
     bool start_process_faces = false;
     bool has_normal = false;
@@ -342,10 +429,27 @@ void ObjectMesh::loadObjectFile(
                 vt_faces));
     }
 
+    object_desc_set_layout_ = createObjectDescriptorSetLayout(
+        device_info.device);
+
+    object_desc_set_ = device_info.device->createDescriptorSets(
+        descriptor_pool, object_desc_set_layout_, 1)[0];
+
+    // create a global ibl texture descriptor set.
+    auto material_descs = addObjectTextures(
+        object_desc_set_,
+        texture_sampler,
+        *normal_tex_,
+        *glossiness_tex_,
+        *diffuse_tex_,
+        *specular_tex_);
+
+    device_info.device->updateDescriptorSets(material_descs);
+
     object_pipeline_layout_ = createPipelineLayout(
         device_info.device,
-        global_desc_set_layouts, nullptr);
-//        material_desc_set_layout);
+        global_desc_set_layouts,
+        object_desc_set_layout_);
 
     renderer::PipelineInputAssemblyStateCreateInfo input_assembly;
     input_assembly.topology = renderer::PrimitiveTopology::TRIANGLE_LIST;
@@ -381,12 +485,7 @@ void ObjectMesh::draw(
     cmd_buf->bindPipeline(renderer::PipelineBindPoint::GRAPHICS, object_pipeline_);
 
     renderer::DescriptorSetList desc_sets = desc_set_list;
-    /*
-        if (prim.material_idx_ >= 0) {
-            const auto& material = gltf_object->materials_[prim.material_idx_];
-            desc_sets.push_back(material.desc_set_);
-        }
-    */
+    desc_sets.push_back(object_desc_set_);
 
     cmd_buf->bindDescriptorSets(
         renderer::PipelineBindPoint::GRAPHICS,
@@ -394,6 +493,7 @@ void ObjectMesh::draw(
         desc_sets);
 
     glsl::ModelParams model_params{};
+    model_params.model_mat = glm::mat4(1.0f);
 
     cmd_buf->pushConstants(
         SET_FLAG_BIT(ShaderStage, VERTEX_BIT) |
@@ -434,6 +534,19 @@ void ObjectMesh::draw(
 void ObjectMesh::destroy(const std::shared_ptr<renderer::Device>& device) {
     for (auto& patch : patches_) {
         patch->destroy(device);
+    }
+
+    if (normal_tex_) {
+        normal_tex_->destroy(device);
+    }
+    if (glossiness_tex_) {
+        glossiness_tex_->destroy(device);
+    }
+    if (diffuse_tex_) {
+        diffuse_tex_->destroy(device);
+    }
+    if (specular_tex_) {
+        specular_tex_->destroy(device);
     }
 
     device->destroyDescriptorSetLayout(object_desc_set_layout_);

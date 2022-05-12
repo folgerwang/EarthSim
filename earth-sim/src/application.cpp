@@ -469,7 +469,9 @@ void RealWorldApplication::initVulkan() {
     lungs_object_ = std::make_shared<ego::ObjectMesh>();
     lungs_object_->loadObjectFile(
         device_info_,
-        "C:/lungs-3dmodel/Lungs_OBJ.objF712CD48-1E90-455F-A65F-EA4627AAB511.obj",
+        descriptor_pool_,
+        texture_sampler_,
+        "assets/lungs/lungs.obj",
         "lungs",
         hdr_render_pass_,
         graphic_pipeline_info_,

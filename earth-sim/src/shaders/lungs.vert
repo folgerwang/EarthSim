@@ -14,10 +14,18 @@ layout(location = VINPUT_POSITION) in vec3 in_position;
 layout(location = VINPUT_TEXCOORD0) in vec2 in_tex_coord;
 layout(location = VINPUT_NORMAL) in vec3 in_normal;
 
+layout(location = 0) out VsPsData {
+    vec3 vertex_position;
+    vec2 vertex_tex_coord;
+    vec3 vertex_normal;
+} out_data;
+
 void main() {
 	// Calculate skinned matrix from weights and joint indices of the current vertex
     mat4 matrix_ls = model_params.model_mat;
     vec3 position_ls = (matrix_ls * vec4(in_position, 1.0f)).xyz;
+    out_data.vertex_normal = mat3(matrix_ls) * in_normal.xyz;
+    out_data.vertex_tex_coord = in_tex_coord;
 
     gl_Position = camera_info.view_proj * vec4(position_ls, 1.0);
 }

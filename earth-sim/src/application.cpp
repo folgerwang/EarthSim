@@ -1195,6 +1195,10 @@ void RealWorldApplication::drawScene(
             screen_size,
             clear_values_);
 
+        if (lungs_object_) {
+            lungs_object_->draw(cmd_buf, desc_sets);
+        }
+
         // render gltf.
         {
             for (auto& gltf_obj : gltf_objects_) {
@@ -1662,7 +1666,9 @@ void RealWorldApplication::cleanup() {
     device_->destroyDescriptorSetLayout(view_desc_set_layout_);
     device_->destroyDescriptorSetLayout(global_tex_desc_set_layout_);
 
-    lungs_object_->destroy(device_);
+    if (lungs_object_) {
+        lungs_object_->destroy(device_);
+    }
     
     ego::TileObject::destoryAllTiles();
     ego::TileObject::destoryStaticMembers(device_);

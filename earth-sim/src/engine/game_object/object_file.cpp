@@ -223,7 +223,7 @@ static std::shared_ptr<renderer::PipelineLayout> createPipelineLayout(
     const renderer::DescriptorSetLayoutList& global_desc_set_layouts,
     const std::shared_ptr<renderer::DescriptorSetLayout>& material_desc_set_layout) {
     renderer::PushConstantRange push_const_range{};
-    push_const_range.stage_flags = SET_FLAG_BIT(ShaderStage, VERTEX_BIT);
+    push_const_range.stage_flags = SET_FLAG_BIT(ShaderStage, VERTEX_BIT) | SET_FLAG_BIT(ShaderStage, FRAGMENT_BIT);
     push_const_range.offset = 0;
     push_const_range.size = sizeof(glsl::ModelParams);
 
@@ -378,6 +378,8 @@ void ObjectMesh::draw(
     std::shared_ptr<renderer::CommandBuffer> cmd_buf,
     const renderer::DescriptorSetList& desc_set_list) {
 
+    cmd_buf->bindPipeline(renderer::PipelineBindPoint::GRAPHICS, object_pipeline_);
+
     renderer::DescriptorSetList desc_sets = desc_set_list;
     /*
         if (prim.material_idx_ >= 0) {
@@ -391,14 +393,14 @@ void ObjectMesh::draw(
         object_pipeline_layout_,
         desc_sets);
 
-    glm::vec4 test_params;
+    glsl::ModelParams model_params{};
 
     cmd_buf->pushConstants(
         SET_FLAG_BIT(ShaderStage, VERTEX_BIT) |
         SET_FLAG_BIT(ShaderStage, FRAGMENT_BIT),
         object_pipeline_layout_,
-        &test_params,
-        sizeof(test_params));
+        &model_params,
+        sizeof(model_params));
 
     for (auto& patch : patches_) {
         std::vector<std::shared_ptr<renderer::Buffer>> buffers;
@@ -425,7 +427,7 @@ void ObjectMesh::draw(
             0,
             renderer::IndexType::UINT32);
 
-        cmd_buf->drawIndexed(static_cast<uint32_t>(patches_[0]->getIndexBuffer()->buffer->getSize() / sizeof(uint32_t)));
+        cmd_buf->drawIndexed(static_cast<uint32_t>(patch->getIndexBuffer()->buffer->getSize() / sizeof(uint32_t)));
     }
 }
 

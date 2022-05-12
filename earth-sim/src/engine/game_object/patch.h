@@ -1,13 +1,13 @@
 #pragma once
 #include "engine/renderer/renderer.h"
-#include "base_shape.h"
+#include "shape_base.h"
 
 namespace engine {
 namespace game_object {
 
-class Patch : public BaseShape {
+class Patch : public ShapeBase {
 public:
-Patch(const renderer::DeviceInfo& device_info) : BaseShape(device_info) {
+Patch() {
 }
 };
 

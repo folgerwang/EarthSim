@@ -5,6 +5,7 @@
 #include "engine/game_object/gltf.h"
 #include "engine/game_object/terrain.h"
 #include "engine/game_object/debug_draw.h"
+#include "engine/game_object/object_file.h"
 #include "engine/scene_rendering/skydome.h"
 #include "engine/scene_rendering/weather_system.h"
 #include "engine/scene_rendering/ibl_creator.h"
@@ -130,6 +131,7 @@ private:
     std::shared_ptr<ego::GameCamera> game_camera_;
     std::vector<std::shared_ptr<ego::GltfObject>> gltf_objects_;
     std::shared_ptr<ego::GltfObject> player_object_;
+    std::shared_ptr<ego::ObjectMesh> lungs_object_;
     std::shared_ptr<es::Skydome> skydome_;
     std::shared_ptr<es::WeatherSystem> weather_system_;
     std::shared_ptr<es::VolumeCloud> volume_cloud_;

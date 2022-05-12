@@ -1,10 +1,10 @@
 #pragma once
-#include "base_shape.h"
+#include "shape_base.h"
 
 namespace engine {
 namespace game_object {
 
-class Box : public BaseShape{
+class Box : public ShapeBase {
 };
 
 } // game_object

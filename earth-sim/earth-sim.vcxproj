@@ -162,7 +162,7 @@
   <ItemGroup>
     <ClCompile Include="src\application.cpp" />
     <ClCompile Include="src\engine\engine_helper.cpp" />
-    <ClCompile Include="src\engine\game_object\base_shape.cpp" />
+    <ClCompile Include="src\engine\game_object\shape_base.cpp" />
     <ClCompile Include="src\engine\game_object\box.cpp" />
     <ClCompile Include="src\engine\game_object\camera.cpp" />
     <ClCompile Include="src\engine\game_object\debug_draw.cpp" />
@@ -195,7 +195,7 @@
   <ItemGroup>
     <ClInclude Include="src\application.h" />
     <ClInclude Include="src\engine\engine_helper.h" />
-    <ClInclude Include="src\engine\game_object\base_shape.h" />
+    <ClInclude Include="src\engine\game_object\shape_base.h" />
     <ClInclude Include="src\engine\game_object\box.h" />
     <ClInclude Include="src\engine\game_object\camera.h" />
     <ClInclude Include="src\engine\game_object\debug_draw.h" />
@@ -259,6 +259,8 @@
     <None Include="src\shaders\grass.geom" />
     <None Include="src\shaders\grass.vert" />
     <None Include="src\shaders\ibl_smooth.comp" />
+    <None Include="src\shaders\lungs.frag" />
+    <None Include="src\shaders\lungs.vert" />
     <None Include="src\shaders\perlin_noise_init.comp" />
     <None Include="src\shaders\ray_tracing\callable_test\rt_callable1.rcall" />
     <None Include="src\shaders\ray_tracing\callable_test\rt_callable2.rcall" />

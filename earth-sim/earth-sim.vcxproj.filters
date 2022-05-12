@@ -150,7 +150,7 @@
     <ClCompile Include="src\engine\game_object\sphere.cpp">
       <Filter>Source Files\engine\game_object</Filter>
     </ClCompile>
-    <ClCompile Include="src\engine\game_object\base_shape.cpp">
+    <ClCompile Include="src\engine\game_object\shape_base.cpp">
       <Filter>Source Files\engine\game_object</Filter>
     </ClCompile>
     <ClCompile Include="src\engine\game_object\box.cpp">
@@ -296,7 +296,7 @@
     <ClInclude Include="src\engine\game_object\sphere.h">
       <Filter>Header Files\engine\game_object</Filter>
     </ClInclude>
-    <ClInclude Include="src\engine\game_object\base_shape.h">
+    <ClInclude Include="src\engine\game_object\shape_base.h">
       <Filter>Header Files\engine\game_object</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\game_object\patch.h">
@@ -441,6 +441,12 @@
     </None>
     <None Include="src\shaders\ray_tracing\raytracing_shadow\rt_shadow.rmiss">
       <Filter>Resource Files\shaders\ray-tracing\raytracing-shadow</Filter>
+    </None>
+    <None Include="src\shaders\lungs.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="src\shaders\lungs.vert">
+      <Filter>Resource Files\shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

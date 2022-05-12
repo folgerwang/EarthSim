@@ -402,8 +402,6 @@ void RealWorldApplication::initVulkan() {
     device_info_.cmd_pool = command_pool_;
     er::Helper::init(device_info_);
 
-    engine::game_object::ObjectMesh object(device_info_, "C:/lungs-3dmodel/Lungs_OBJ.objF712CD48-1E90-455F-A65F-EA4627AAB511.obj");
-
     engine::helper::loadMtx2Texture(
         device_info_,
         cubemap_render_pass_,
@@ -468,6 +466,16 @@ void RealWorldApplication::initVulkan() {
     }
 
     auto desc_set_layouts = { global_tex_desc_set_layout_, view_desc_set_layout_ };
+    lungs_object_ = std::make_shared<ego::ObjectMesh>();
+    lungs_object_->loadObjectFile(
+        device_info_,
+        "C:/lungs-3dmodel/Lungs_OBJ.objF712CD48-1E90-455F-A65F-EA4627AAB511.obj",
+        "lungs",
+        hdr_render_pass_,
+        graphic_pipeline_info_,
+        desc_set_layouts,
+        swap_chain_info_.extent);
+
     ego::TileObject::initStaticMembers(
         device_info_,
         hdr_render_pass_,
@@ -1653,6 +1661,8 @@ void RealWorldApplication::cleanup() {
     device_->destroySampler(mirror_repeat_sampler_);
     device_->destroyDescriptorSetLayout(view_desc_set_layout_);
     device_->destroyDescriptorSetLayout(global_tex_desc_set_layout_);
+
+    lungs_object_->destroy(device_);
     
     ego::TileObject::destoryAllTiles();
     ego::TileObject::destoryStaticMembers(device_);

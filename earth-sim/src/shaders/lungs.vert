@@ -25,7 +25,7 @@ void main() {
     mat4 matrix_ls = model_params.model_mat;
     vec3 position_ls = (matrix_ls * vec4(in_position, 1.0f)).xyz;
     out_data.vertex_normal = mat3(matrix_ls) * in_normal.xyz;
-    out_data.vertex_tex_coord = in_tex_coord;
+    out_data.vertex_tex_coord = vec2(in_tex_coord.x, 1.0f - in_tex_coord.y);
 
     gl_Position = camera_info.view_proj * vec4(position_ls, 1.0);
 }

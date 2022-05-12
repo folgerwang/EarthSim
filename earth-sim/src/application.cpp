@@ -474,7 +474,7 @@ void RealWorldApplication::initVulkan() {
         "assets/lungs/lungs.obj",
         "lungs",
         hdr_render_pass_,
-        graphic_pipeline_info_,
+        graphic_double_face_pipeline_info_,
         desc_set_layouts,
         swap_chain_info_.extent);
 

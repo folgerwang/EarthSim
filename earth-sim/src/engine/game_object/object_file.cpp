@@ -493,7 +493,7 @@ void ObjectMesh::draw(
         desc_sets);
 
     glsl::ModelParams model_params{};
-    model_params.model_mat = glm::mat4(1.0f);
+    model_params.model_mat = glm::mat4(100.0f);
 
     cmd_buf->pushConstants(
         SET_FLAG_BIT(ShaderStage, VERTEX_BIT) |

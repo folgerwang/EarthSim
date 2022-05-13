@@ -536,6 +536,8 @@ struct GameCameraParams {
     int             game_obj_idx;
     uint            camera_rot_update;
     float           mouse_wheel_offset;
+    float           yaw;
+    float           pitch;
 };
 
 // could be updated from frame to frame.

@@ -466,6 +466,7 @@ void RealWorldApplication::initVulkan() {
     }
 
     auto desc_set_layouts = { global_tex_desc_set_layout_, view_desc_set_layout_ };
+#ifdef LUNGS_DISPLAY
     lungs_object_ = std::make_shared<ego::ObjectMesh>();
     lungs_object_->loadObjectFile(
         device_info_,
@@ -477,6 +478,7 @@ void RealWorldApplication::initVulkan() {
         graphic_double_face_pipeline_info_,
         desc_set_layouts,
         swap_chain_info_.extent);
+#endif
 
     ego::TileObject::initStaticMembers(
         device_info_,
@@ -1153,18 +1155,30 @@ void RealWorldApplication::drawScene(
         glsl::GameCameraParams game_camera_params;
         game_camera_params.world_min = ego::TileObject::getWorldMin();
         game_camera_params.inv_world_range = 1.0f / ego::TileObject::getWorldRange();
+#ifdef LUNGS_DISPLAY
+        game_camera_params.init_camera_pos = glm::vec3(0.0259797517f, -1.35520291f, 13.9951925f);
+        game_camera_params.init_camera_dir = glm::vec3(-0.0611260906f, -0.228350893f, -0.971658051f);
+        game_camera_params.camera_speed = 0.01f;
+        game_camera_params.z_near = 0.001f;
+        game_camera_params.z_far = 100.0f;
+        game_camera_params.yaw = -275.4f;
+        game_camera_params.pitch = -15.0f;
+#else
         game_camera_params.init_camera_pos = glm::vec3(0, 500.0f, 0);
-        game_camera_params.key = s_key;
         game_camera_params.init_camera_dir = glm::vec3(1.0f, 0.0f, 0.0f);
+        game_camera_params.camera_speed = s_camera_speed;
+        game_camera_params.z_near = 0.1f;
+        game_camera_params.z_far = 40000.0f;
+        game_camera_params.yaw = 0.0f;
+        game_camera_params.pitch = 0.0f;
+#endif
+        game_camera_params.key = s_key;
         game_camera_params.frame_count = s_update_frame_count;
         game_camera_params.init_camera_up = glm::vec3(0, 1, 0);
         game_camera_params.delta_t = delta_t;
         game_camera_params.mouse_pos = s_last_mouse_pos;
-        game_camera_params.camera_speed = s_camera_speed;
         game_camera_params.fov = glm::radians(45.0f);
         game_camera_params.aspect = swap_chain_info_.extent.x / (float)swap_chain_info_.extent.y;
-        game_camera_params.z_near = 0.1f;
-        game_camera_params.z_far = 40000.0f;
         game_camera_params.sensitivity = 0.2f;
         game_camera_params.num_game_objs = static_cast<int32_t>(gltf_objects_.size());
         game_camera_params.game_obj_idx = 0;
@@ -1197,10 +1211,11 @@ void RealWorldApplication::drawScene(
             screen_size,
             clear_values_);
 
+#ifdef LUNGS_DISPLAY
         if (lungs_object_) {
             lungs_object_->draw(cmd_buf, desc_sets);
         }
-
+#else
         // render gltf.
         {
             for (auto& gltf_obj : gltf_objects_) {
@@ -1237,9 +1252,10 @@ void RealWorldApplication::drawScene(
         {
             skydome_->draw(cmd_buf, view_desc_set);
         }
-
+#endif
         cmd_buf->endRenderPass();
 
+#ifndef LUNGS_DISPLAY
         er::ImageResourceInfo color_src_info = {
             er::ImageLayout::COLOR_ATTACHMENT_OPTIMAL,
             SET_FLAG_BIT(Access, COLOR_ATTACHMENT_WRITE_BIT),
@@ -1341,6 +1357,7 @@ void RealWorldApplication::drawScene(
                     current_time);
             }
         }
+#endif
     }
 
     er::ImageResourceInfo src_info = {

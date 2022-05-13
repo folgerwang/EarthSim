@@ -14,6 +14,8 @@
 #include "engine/scene_rendering/volume_noise.h"
 #include "engine/ray_tracing/raytracing_base.h"
 
+#define LUNGS_DISPLAY
+
 namespace er = engine::renderer;
 namespace ego = engine::game_object;
 namespace es = engine::scene_rendering;

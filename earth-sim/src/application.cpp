@@ -1156,13 +1156,13 @@ void RealWorldApplication::drawScene(
         game_camera_params.world_min = ego::TileObject::getWorldMin();
         game_camera_params.inv_world_range = 1.0f / ego::TileObject::getWorldRange();
 #ifdef LUNGS_DISPLAY
-        game_camera_params.init_camera_pos = glm::vec3(-0.142134145f, -2.00451803f, 12.1480036);
-        game_camera_params.init_camera_dir = glm::vec3(-0.0592112616f, -0.0558214188f, -0.996683478f);
+        game_camera_params.init_camera_pos = glm::vec3(0.0732402653f, -0.106421500f, 11.9808321f);
+        game_camera_params.init_camera_dir = glm::vec3(-0.100875236f, -0.0558219776f, -0.993331790f);
         game_camera_params.camera_speed = 0.01f;
         game_camera_params.z_near = 0.001f;
         game_camera_params.z_far = 100.0f;
-        game_camera_params.yaw = -266.600159f;
-        game_camera_params.pitch = -3.20000196f;
+        game_camera_params.yaw = -264.201355f;
+        game_camera_params.pitch = -3.200002937f;
         game_camera_params.camera_follow_dist = 0.5f;
 #else
         game_camera_params.init_camera_pos = glm::vec3(0, 500.0f, 0);

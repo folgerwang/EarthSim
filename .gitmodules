@@ -13,3 +13,6 @@
 [submodule "earth-sim/src/third_party/tinygltf"]
 	path = earth-sim/src/third_party/tinygltf
 	url = git@github.com:syoyo/tinygltf.git
+[submodule "earth-sim/src/sim_engine"]
+	path = earth-sim/src/sim_engine
+	url = git@github.com:folgerwang/sim_engine.git

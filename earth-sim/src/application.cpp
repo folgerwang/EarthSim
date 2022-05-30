@@ -1219,7 +1219,7 @@ void RealWorldApplication::drawScene(
 
 #ifdef LUNGS_DISPLAY
         if (lungs_object_) {
-            lungs_object_->draw(cmd_buf, desc_sets);
+            lungs_object_->draw(cmd_buf, desc_sets, 1);
         }
 #else
         // render gltf.
